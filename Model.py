@@ -6,6 +6,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
+import joblib
+
+def load_model() -> any:
+    model = joblib.load('Data/rf_model.pkl')
+    return model
+
+def predict(input_data, model=None):
+    if model is None:
+        model = load_model()
+    return model.predict(input_data)
 
 
 data = pd.read_csv("Data/Real_Estate.csv")
@@ -130,4 +140,4 @@ plt.title('Actual vs. Predicted House Prices')
 print(mean_squared_error(y_test, y_pred_lr2))
 print(r2_score(y_test, y_pred_lr2))
 
-
+joblib.dump(model, 'Data/rf_model.pkl')

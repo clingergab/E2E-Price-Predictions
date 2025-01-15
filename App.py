@@ -2,10 +2,15 @@ from doctest import debug
 import dash
 from dash import html, dcc, Input, Output, State
 import pandas as pd
-from Model import model, model2
+import Model
+import joblib
+
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
+
+# load model
+model = Model.load_model()
 
 # Define layout of app
 app.layout = html.Div([
@@ -46,11 +51,13 @@ def update_output(n_clicks, distance_to_mrt, num_convenience_stores, house_age):
         features = pd.DataFrame([[distance_to_mrt, num_convenience_stores, house_age]], 
                                 columns=['Distance to the nearest MRT station', 'Number of convenience stores', 'House age'])
         # Predict
-        prediction = model.predict(features)[0]
+        prediction = Model.predict(features, model)[0]
         return f'Predicted House Price of Unit Area: {prediction:.2f}'
     elif n_clicks > 0:
         return 'Please enter all values to get a prediction'
     return ''
+
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
